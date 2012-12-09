@@ -1,4 +1,4 @@
 redwrap
 =======
 
-A reddit API wrapper for node.js
+An reddit API wrapper for node.js
