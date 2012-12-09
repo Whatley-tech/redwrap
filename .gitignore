@@ -12,7 +12,6 @@ logs
 results
 
 npm-debug.log
-node_modules
 sublime
 testPROTO.js
 requesterPROTO.js
