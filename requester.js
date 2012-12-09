@@ -48,50 +48,6 @@ Requester.prototype.exe = function(cb) {
 		console.log('Requested URL: ' + url);
 };
 
-//executes multiple requests
-Requester.prototype.all = function(cb) {
-	var url = this.path + '/' + this.filter + '/' + '.json' + this.query
-	,	incrament = '';
-		
-		cb(this.ee);
-		this.collector();
-};
-
-//collector is used by the .all() method to make multipe requests
-Requester.prototype.collector = function(nextQuery, currentCount, lastPost) {
-	var that = this;
-
-	var initUrl = this.path + '/' + this.filter + '/' + '.json'
-	,	url = (nextQuery) ? initUrl + nextQuery : initUrl
-	,	iteration = currentCount || 0;
-
-	request(url, function(error, response, body) {
-			if (!error && response.statusCode == 200) {
-				
-				that.ee.emit('data', body);
-				
-				parseJSON(body, function(bodyObj) {
-					iteration += 25;
-	
-					if(bodyObj.data.after) {
-						var post = bodyObj.data.after
-						,	nextQuery = '?count=' + iteration + '&after=' + post
-						,	urlObj = qs.parse(url);
-
-						console.log('Next Url: ' + initUrl + nextQuery);
-
-						if(urlObj.after !== post) {
-							that.collector(nextQuery, iteration, post);
-							return;
-						}
-						that.ee.emit('end', 'Query complete'); //TODO: make this work
-					}
-				});
-			}
-			that.ee.emit('error', error);
-		});
-};
-
 /*==========  CHAINING FILTERS  ==========*/
 
 var filters = [
