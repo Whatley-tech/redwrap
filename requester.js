@@ -10,6 +10,7 @@ var request = require('request')
 ,	qs = require('querystring')
 ,	url = require('url');
 
+
 /*==========  UTILITY FUNCTIONS  ==========*/
 
 var parseJSON = function(myJSON, cb){
@@ -17,57 +18,21 @@ var parseJSON = function(myJSON, cb){
 	cb(parsed);
 };
 
+
 /*==========  CONSTRUCTOR  ==========*/
 
 var Requester = function(path) {
 		this.ee = new EventEmitter();
+		this.path = path;
 		this.filter = '';
 		this.url = {
 			protocol: 'http'
 		,	host: 'www.reddit.com'
-		,	pathname : path + this.filter + '/.json'
+		,	pathname : path + '/.json'
 		,	query: {}
 		};
 	};
 
-
-/*========== @QUERY OPTIONS  ==========*/
-
-//adds a sort filter for USER QUERY ONLY, r QUERIES should use chaining filters to sort
-Requester.prototype.sortBy = function(option, cb){
-	this.url.query.sort = option;
-	return (cb) ? this.exe(cb) : this;
-};
-
-//adds a time filter to query
-Requester.prototype.from = function(time, cb){
-	this.url.query.t = time;
-	return (cb) ? this.exe(cb) : this;
-};
-
-//adds a limit filter to query
-Requester.prototype.limit = function(limit, cb){
-	this.url.query.limit = limit;
-	return (cb) ? this.exe(cb) : this;
-};
-
-//adds an after filter to query
-Requester.prototype.after = function(after, cb){
-	this.url.query.after = after;
-	return (cb) ? this.exe(cb) : this;
-};
-
-//adds a before filter to query
-Requester.prototype.before = function(before, cb){
-	this.url.query.before = before;
-	return (cb) ? this.exe(cb) : this;
-};
-
-//adds a count filter to query
-Requester.prototype.count = function(count, cb){
-	this.url.query.count = count;
-	return (cb) ? this.exe(cb) : this;
-};
 
 /*========== @REQUEST EXECUTION METHODS  ==========*/
 
@@ -83,7 +48,9 @@ Requester.prototype.exe = function(cb) {
 //executes multiple requests
 Requester.prototype.all = function(cb) {
 		cb(this.ee);
-		this.url.query.limit = 100; //force max limit for bulk requests
+		var limit = this.url.query.limit;
+		this.url.query.limit = (limit) ? limit : 100; //default max limit, 100
+
 		this.collector();
 };
 
@@ -96,24 +63,23 @@ Requester.prototype.all = function(cb) {
  */
 
 Requester.prototype.collector = function() {
-	var that = this;
-	var reqUrl = url.format(that.url);
-	
-	console.log('Requested: ' + reqUrl);
+	var that = this
+	,	reqUrl = url.format(that.url);
+
+	console.log('Requesting: ' + reqUrl);
 
 	request(reqUrl, function(error, res, body){
 		if (error) {
-			return that.ee.emit('error', error);
+			that.ee.emit('error', error);
+			return;
 		}
 		if (!error && res.statusCode == 200) {
 			that.ee.emit('data', body);
 
 			parseJSON(body, function(bodyObj){
-				
 				if(bodyObj.data.after) {
 					var nextAfter = bodyObj.data.after,
 						prevAfter = that.url.query.after;
-						that.url.query.count += 100;
 						that.url.query.after = nextAfter;
 
 						return (nextAfter !== prevAfter) ?
@@ -124,7 +90,36 @@ Requester.prototype.collector = function() {
 	});
 };
 
-/*==========  CHAINING FILTERS  ==========*/
+
+/*========== @QUERY OPTIONS  ==========*/
+
+var queries = [
+	'sort'
+	,'from'
+	,'limit'
+	,'after'
+	,'before'
+	,'count'
+];
+
+queries.forEach(function(query){
+	
+	if (query === 'from') {
+		Requester.prototype.from = function(value, cb){
+			this.url.query.t = value;
+			return (cb) ? this.exe(cb) : this;
+		};
+		return;
+	}
+
+	Requester.prototype[query] = function(value, cb) {
+		this.url.query[query] = value;
+		return (cb) ? this.exe(cb) : this;
+	};
+});
+
+
+/*==========  FILTERS  ==========*/
 
 var filters = [
 	//user
@@ -147,12 +142,13 @@ filters.forEach(function(filter) {
 	Requester.prototype[filter] = function(cb) {
 		if(this.filter) throw "Only one filter can be applied to a query.";
 		this.filter = filter;
-		if(cb) {
-			this.exe(cb);
-		}
-		return this;
+		this.url.pathname = this.path + this.filter + '/.json';
+
+		return (cb) ? this.exe(cb) : this;
+		
 	};
 });
+
 
 /*==========  EXPORTS  ==========*/
 

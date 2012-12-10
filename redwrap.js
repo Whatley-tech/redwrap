@@ -2,7 +2,7 @@ Requester = require('./requester').Requester;
 
 //request user data
 var user = function(username, cb) {
-		var path = '/user/' + username,
+		var path = '/user/' + username + '/',
 			requester = new Requester(path);
 
 		return(cb) ? requester.exe(cb) : requester;
@@ -10,7 +10,7 @@ var user = function(username, cb) {
 
 //request subreddit data
 var r = function(subreddit, cb) {
-		var path = '/r/' + subreddit,
+		var path = '/r/' + subreddit + '/',
 			requester = new Requester(path);
 
 		return(cb) ? requester.exe(cb) : requester;
@@ -18,8 +18,7 @@ var r = function(subreddit, cb) {
 
 //lists reddit front page filters
 var list = function(filter, cb) {
-
-		var	path = filter
+		var	path = filter + '/'
 		,	requester = new Requester(path);
 
 		return(cb) ? requester.exe(cb) : requester;
