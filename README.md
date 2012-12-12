@@ -2,12 +2,12 @@
 
 ###A nodejs wrapper for the reddit API
 
-start by requiring the redwrap module
+Start by requiring the redwrap module
 
-<code>
+```javascript
 
 reddit = require('redwrap');
 
-</code>
+```
 
 
