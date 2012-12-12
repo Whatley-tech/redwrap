@@ -35,7 +35,7 @@ reddit.r('WTF', function(err, res, body){
 
 ###3.The basic list request
 
-With the list  method the first argument is optional, and we will see why in a moment, but lets include one for now.
+With the list method the first argument is optional, and we will see why in a moment, but let's include one for now.
 
 ```javascript
 reddit.list('hot', function(err, res, body){
@@ -43,7 +43,7 @@ reddit.list('hot', function(err, res, body){
 });
 ```
 
-That's cool, but we can make it even easier by chaining other methods onto our request.  So lets look at how to format our previous request, using chaining this time.
+That's cool, but we can make it even easier by chaining other methods onto our request.  So let's look at how to format our previous request, using chaining this time.
 
 ```javascript
 reddit.list().hot().exe(function(err, res, body){
@@ -54,7 +54,7 @@ Take note of the .exe() method.  This is an optional method that can be placed a
 
 ###Filters
 
-Filters in redwrap are methods we can chain to our requests.  These filters corrispond exactly with the filters you see on the reddit site. In the last example, we saw our first use of a filter, when we chained .hot() to our request.  Below is a list of possible filters.  You can find 
+Filters in redwrap are methods we can chain to our requests.  These filters correspond exactly with the filters you see on the reddit site. In the last example, we saw our first use of a filter, when we chained .hot() to our request.  Below is a list of possible filters.  You can find 
 
 
 User filters
@@ -77,7 +77,7 @@ Subreddit filters
 
 ###Queries
 
-Queries are applied to our request chain in the same way filters are.  They allow us to make a more targeted requests from the Reddit API.  The main difference between filters and queries is that queries require an argument when called. In this next example we will be requesting the 'top' '100' comments from this 'year', for the given username.
+Queries are applied to our request chain in the same way filters are.  They allow us to make a more targeted request from the Reddit API.  The main difference between filters and queries is that queries require an argument when called. In this next example we will be requesting the 'top' '100' comments from this 'year', for the given username.
 
 ```javascript
 reddit.user('username').sort('top').from('year').limit(100, function(err, res, body){
@@ -103,7 +103,7 @@ Here is a list of the possible queries along with acceptable arguments. You can 
 
 **Use this at your own risk** 
 
-Before using this feature it is important that you be aware of the rules found in the Reddit API documentation.  Currently, there is no throttle on the number of requests per min the .all()  method makes.  It will continue to make requests until it completes, or until Reddit cuts you off. Also note that the default limit is set to 100.  You can change this by adding your own limit query to the request chain, but it isn't recomended.  I would like to expand on this feature in the near future, so please, if you have any feature requests let me know.
+Before using this feature it is important that you be aware of the rules found in the Reddit API documentation.  Currently, there is no throttle on the number of requests per min the .all()  method makes.  It will continue to make requests until it completes, or until Reddit cuts you off. Also note that the default limit is set to 100.  You can change this by adding your own limit query to the request chain, but it isn't recommended.  I would like to expand on this feature in the near future, so please, if you have any feature requests let me know.
 
 Here is the basic pattern for making multiple requests with redwrap.
 
