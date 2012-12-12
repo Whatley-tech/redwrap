@@ -127,8 +127,4 @@ reddit.user('username').comments().sort('top').all(function(res) {
 
 If you have experience with the http module in node, then this should look very familiar.  When you use the .all method, it passes back an event emitter object that you can attach your event listeners to. The standard data, error, and end events are possible. (The 'end' event is actually bugged at the moment. If you have a fix let me know.)
 
-<<<<<<< HEAD
 That's all for now. My goal is to expand the features of redwrap to cover as much of the Reddit API as is needed by devs, so let me know if there is a feature you would like to see included. Enjoy!
-=======
-That's all for now. My goal is to expand the features of redwrap to cover as much of the Reddit API as is needed by devs, so let me know if there is a feature you would like to see included. Enjoy!
->>>>>>> 37c68e9060b36a4e530197fb3de9e1c3b2966b0b
