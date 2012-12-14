@@ -12,15 +12,17 @@ Start by requiring the redwrap module
 reddit = require('redwrap');
 ```
 
-This gives us access to 3 types of requests. 
+This gives us access to 3 types of requests. Each of these request types must be provided with a callback function.  The arguments for the callback function are error, data, and response.
+	* error - will return any errors encountered during the request
+	* data - returns an object created by parsing the JSON  in the response body
+	* response - returns the raw response from Reddit, including the body in JSON form.
 
 ###1.The basic user request
 
-Redwrap uses the request module to issue requests behind the scenes.  If you are familiar with request, you will notice the arguments for all of our callbacks in redwrap are the same.
 
 ```javascript
-reddit.user('username', function(err, res, body){
-  console.log(body); //outputs json for the requested username
+reddit.user('username', function(err, data, res){
+  console.log(data); //outputs a parsed javascript object represeting
 });
 ```
 
@@ -28,8 +30,8 @@ reddit.user('username', function(err, res, body){
 
 
 ```javascript
-reddit.r('WTF', function(err, res, body){
-  console.log(body); //outputs json for first page of WTF subreddit
+reddit.r('WTF', function(err, data, res){
+  console.log(data); //outputs object representing first page of WTF subreddit
 });	
 ```
 
@@ -38,16 +40,16 @@ reddit.r('WTF', function(err, res, body){
 With the list method the first argument is optional, and we will see why in a moment, but let's include one for now.
 
 ```javascript
-reddit.list('hot', function(err, res, body){
-	console.log(body); //json for the front page of reddit w/ 'hot' filter
+reddit.list('hot', function(err, data, res){
+	console.log(data); //object representing the front page of reddit w/ 'hot' filter
 });
 ```
 
 That's cool, but we can make it even easier by chaining other methods onto our request.  So let's look at how to format our previous request, using chaining this time.
 
 ```javascript
-reddit.list().hot().exe(function(err, res, body){
-	console.log(body);
+reddit.list().hot().exe(function(err, data, res){
+	console.log(data);
 });
 ```
 Take note of the .exe() method.  This is an optional method that can be placed at the end of our chain which takes a callback as its only argument.  You might use this as a way of breaking up long chains into a more readable structure.  For shorter chains, we can just add our callback to the last method in the chain.
@@ -80,8 +82,8 @@ Subreddit filters
 Queries are applied to our request chain in the same way filters are.  They allow us to make a more targeted request from the Reddit API.  The main difference between filters and queries is that queries require an argument when called. In this next example we will be requesting the 'top' '100' comments from this 'year', for the given username.
 
 ```javascript
-reddit.user('username').sort('top').from('year').limit(100, function(err, res, body){
-	console.log(body); //top 100 comments this year for username
+reddit.user('username').sort('top').from('year').limit(100, function(err, data, res){
+	console.log(data); //top 100 comments this year for username
 });
 ```
 Here is a list of the possible queries along with acceptable arguments. You can learn more about the arguments from the Reddit API documentation.
