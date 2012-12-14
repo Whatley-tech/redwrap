@@ -1,4 +1,5 @@
 node_modules/*
+test.js
 
 lib-cov
 *.seed
@@ -14,14 +15,3 @@ logs
 results
 
 npm-debug.log
-<<<<<<< HEAD
-sublime
-testProto.js
-requesterProto.js
-map.txt
-=======
-map.txt
-test.js
-sublime
-
->>>>>>> 431a296a2e95580c08e02f48e9f5cfbc50536984
