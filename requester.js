@@ -23,12 +23,12 @@ var parseJSON = function(myJSON, cb){
 
 var Requester = function(path) {
 		this.ee = new EventEmitter();
-		this.path = path || '';
+		this.path = path || '/';
 		this.filter = '';
 		this.url = {
 			protocol: 'http'
 		,	host: 'www.reddit.com'
-		,	pathname : path + '/.json'
+		,	pathname : path + '.json'
 		,	query: {}
 		};
 	};
