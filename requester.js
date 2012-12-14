@@ -13,11 +13,6 @@ var request = require('request')
 
 /*==========  UTILITY FUNCTIONS  ==========*/
 
-var parseJSON = function(myJSON, cb){
-	var parsed = JSON.parse(myJSON);
-	cb(parsed);
-};
-
 
 /*==========  CONSTRUCTOR  ==========*/
 
@@ -41,7 +36,18 @@ Requester.prototype.exe = function(cb) {
 	var query = qs.stringify(this.url.query)
 	,	reqUrl = url.format(this.url);
 
-		request.get(reqUrl, cb);
+		request.get(reqUrl, function(err, res, body){
+			try {
+				parsedBody = JSON.parse(body);
+			}
+			catch (parseError) {
+				return cb(parseError, null);
+			}
+
+			cb(err, parsedBody, res);
+
+		});
+
 		console.log('Requested URL: ' + reqUrl);
 };
 
