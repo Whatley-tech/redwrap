@@ -41,7 +41,7 @@ Requester.prototype.exe = function(cb) {
 	var query = qs.stringify(this.url.query)
 	,	reqUrl = url.format(this.url);
 
-		request(reqUrl, cb);
+		request.get(reqUrl, cb);
 		console.log('Requested URL: ' + reqUrl);
 };
 
@@ -68,7 +68,7 @@ Requester.prototype.collector = function() {
 
 	console.log('Requesting: ' + reqUrl);
 
-	request(reqUrl, function(error, res, body){
+	request.get(reqUrl, function(error, res, body){
 		if (error) {
 			that.ee.emit('error', error);
 			return;
