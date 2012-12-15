@@ -1,6 +1,6 @@
 {
   "name": "redwrap",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Redwrap simplifies Reddit API requests by providing an easy to use wrapper with jQuery style chaining.",
   "main": "redwrap.js",
   "dependencies": {
