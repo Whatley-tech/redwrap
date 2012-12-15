@@ -18,15 +18,14 @@ var r = function(subreddit, cb) {
 
 //lists reddit front page filters
 var list = function(filter, cb) {
-		
-		if (filter) {
-		var	path = filter + '/'
-		,	requester = new Requester(path);
+		var path = '',
+			requester = '';
+
+		if(filter) {
+			path = filter + '/', requester = new Requester(path);
 		} else {
 			requester = new Requester();
 		}
-
-
 
 		return(cb) ? requester.exe(cb) : requester;
 	};
