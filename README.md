@@ -105,28 +105,30 @@ Here is a list of the possible queries along with acceptable arguments. You can 
 
 **Use this at your own risk** 
 
-Before using this feature it is important that you be aware of the rules found in the Reddit API documentation.  Currently, there is no throttle on the number of requests per min the .all()  method makes.  It will continue to make requests until it completes, or until Reddit cuts you off. Also note that the default limit is set to 100.  You can change this by adding your own limit query to the request chain, but it isn't recommended.  I would like to expand on this feature in the near future, so please, if you have any feature requests let me know.
+Before using this feature it is important that you be aware of the rules found in the Reddit API documentation.  Currently, there is no throttle on the number of requests per min the .all()  method makes.  It will continue to cycle until it collects all of the requested data, or until Reddit cuts you off. Also note that the default limit is set to 100.  You can change this by adding your own limit query to the request chain, but it isn't recommended.  I would like to expand on this feature in the near future, so please, if you have any feature requests let me know.
 
-Here is the basic pattern for making multiple requests with redwrap.
+
+What exactly does the .all() method do? It is basicly a method that allows you to scrape multiple pages of Reddit data. First we create a request chain with our desired filter and queries, just like the previous examples.  Then we add the .all() method to the end of the chain. This gives us access to an event emitter which we can attach listener functions to.  
+
+Here is the basic pattern for making multiple page requests with redwrap using the .all() method.
 
 ```javascript
-
 reddit.user('username').comments().sort('top').all(function(res) {
-
-	res.on('data', function(data) {
-		console.log(data);
+	res.on('data', function(data, res) {
+		console.log(data); //a parsed javascript object of the requested data
+		console.log(res); //the raw response data from Reddit
 	});
+
 	res.on('error', function(e) {
-		console.log(e);
+		console.log(e); //outputs any errors
 	});
-	res.on('end', function(data){
-		console.log(data);
-	});
-	
-});
 
+	res.on('end', function(){
+		console.log('All Done');
+	});
+});
 ```
 
-If you have experience with the http module in node, then this should look very familiar.  When you use the .all method, it passes back an event emitter object that you can attach your event listeners to. The standard data, error, and end events are possible. (The 'end' event is actually bugged at the moment. If you have a fix let me know.)
+If you have experience with the http module in node, then this should look very familiar.  When you use the .all method, it passes back an event emitter object that you can attach your event listeners to. The standard data, error, and end events are possible. Each time reddit responds with a new page of results, it triggers the 'data' event.
 
 That's all for now. My goal is to expand the features of redwrap to cover as much of the Reddit API as is needed by devs, so let me know if there is a feature you would like to see included. Enjoy!
