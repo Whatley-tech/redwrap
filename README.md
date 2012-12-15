@@ -13,9 +13,9 @@ reddit = require('redwrap');
 ```
 
 This gives us access to 3 types of requests. Each of these request types must be provided with a callback function.  The arguments for the callback function are error, data, and response.
-	* error - will return any errors encountered during the request
-	* data - returns an object created by parsing the JSON  in the response body
-	* response - returns the raw response from Reddit, including the body in JSON form.
+* error - will return any errors encountered during the request
+* data - returns an object created by parsing the JSON  in the response body
+* response - returns the raw response from Reddit, including the body in JSON form.
 
 ###1.The basic user request
 
