@@ -11,9 +11,6 @@ var request = require('request')
 ,	url = require('url');
 
 
-/*==========  UTILITY FUNCTIONS  ==========*/
-
-
 /*==========  CONSTRUCTOR  ==========*/
 
 var Requester = function(path) {
@@ -34,7 +31,8 @@ var Requester = function(path) {
 //executes a single request
 Requester.prototype.exe = function(cb) {
 	var query = qs.stringify(this.url.query)
-	,	reqUrl = url.format(this.url);
+	,	reqUrl = url.format(this.url)
+	,	parsedBody = '';
 
 		request.get(reqUrl, function(err, res, body){
 			try {
@@ -45,7 +43,6 @@ Requester.prototype.exe = function(cb) {
 			}
 
 			cb(err, parsedBody, res);
-
 		});
 
 		console.log('Requested URL: ' + reqUrl);
@@ -53,9 +50,10 @@ Requester.prototype.exe = function(cb) {
 
 //executes multiple requests
 Requester.prototype.all = function(cb) {
-		cb(this.ee);
 		var limit = this.url.query.limit;
 		this.url.query.limit = (limit) ? limit : 100; //default max limit, 100
+		
+		cb(this.ee);
 
 		this.collector();
 };
@@ -70,7 +68,10 @@ Requester.prototype.all = function(cb) {
 
 Requester.prototype.collector = function() {
 	var that = this
-	,	reqUrl = url.format(that.url);
+	,	reqUrl = url.format(that.url)
+	,	parsedBody = ''
+	,	nextAfter = ''
+	,	prevAfter = '';
 
 	console.log('Requesting: ' + reqUrl);
 
@@ -79,19 +80,26 @@ Requester.prototype.collector = function() {
 			that.ee.emit('error', error);
 			return;
 		}
+
 		if (!error && res.statusCode == 200) {
-			that.ee.emit('data', body);
+			try {
+				parsedBody = JSON.parse(body);
+			}
+			catch(parseError){
+				return that.ee.emit('error', parseError);
+			}
 
-			parseJSON(body, function(bodyObj){
-				if(bodyObj.data.after) {
-					var nextAfter = bodyObj.data.after,
-						prevAfter = that.url.query.after;
-						that.url.query.after = nextAfter;
+			that.ee.emit('data', parsedBody, res);
+			
+				if(parsedBody.data.after) {
+					nextAfter = parsedBody.data.after,
+					prevAfter = that.url.query.after;
+					that.url.query.after = nextAfter;
 
-						return (nextAfter !== prevAfter) ?
-							that.collector() : that.ee.emit('end', 'Done');
+					return (nextAfter !== prevAfter) ? //a check to see if we are done
+						that.collector() : that.ee.emit('end');
 				}
-			});
+				return that.ee.emit('end');
 		}
 	});
 };
@@ -109,7 +117,6 @@ var queries = [
 ];
 
 queries.forEach(function(query){
-	
 	if (query === 'from') {
 		Requester.prototype.from = function(value, cb){
 			this.url.query.t = value;
@@ -151,7 +158,6 @@ filters.forEach(function(filter) {
 		this.url.pathname = this.path + this.filter + '/.json';
 
 		return (cb) ? this.exe(cb) : this;
-		
 	};
 });
 
