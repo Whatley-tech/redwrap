@@ -87,7 +87,7 @@ Requester.prototype.collector = function () {
         }
     };
 
-    request(data, function (err, res, body) {
+    request(data, function (error, res, body) {
         if (error) {
             that.ee.emit('error', error);
             return;
