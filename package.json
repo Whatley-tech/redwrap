@@ -1,0 +1,31 @@
+{
+  "name": "redwrap",
+  "version": "0.0.4",
+  "description": "Redwrap simplifies Reddit API requests by providing an easy to use wrapper with jQuery style chaining.",
+  "main": "redwrap.js",
+  "dependencies": {
+    "request": "~2.12.0"
+  },
+  "devDependencies": {
+    "mocha":  "~1.4.1",
+    "chai": "~1.2.0",
+    "sinon": "~1.4.2"
+  },
+  "scripts": {
+    "test": "./node_modules/mocha/bin/mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Stebon24/redwrap.git"
+  },
+  "keywords": [
+    "reddit",
+    "API",
+    "wrapper",
+    "redwrap",
+    ""
+  ],
+  "author": "Stephen Whatley",
+  "license": "MIT",
+  "readmeFilename": "README.md"
+}
