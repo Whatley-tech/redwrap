@@ -13,7 +13,7 @@ var request = require('request')
 
 /*==========  CONSTRUCTOR  ==========*/
 
-var Requester = function(path) {
+var Requester = function(path, query) {
 		this.ee = new EventEmitter();
 		this.path = path || '/';
 		this.filter = '';
@@ -21,7 +21,7 @@ var Requester = function(path) {
 			protocol: 'http'
 		,	host: 'www.reddit.com'
 		,	pathname : path + '.json'
-		,	query: {}
+		,	query: (query) ? query : {}
 		};
 	};
 
