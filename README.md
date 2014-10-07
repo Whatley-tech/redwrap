@@ -54,6 +54,16 @@ reddit.list().hot().exe(function(err, data, res){
 ```
 Take note of the .exe() method.  This is an optional method that can be placed at the end of our chain which takes a callback as its only argument.  You might use this as a way of breaking up long chains into a more readable structure.  For shorter chains, we can just add our callback to the last method in the chain.
 
+###4.Comments
+
+Given a subreddit and a article ID (or what Reddit terms the `ID36` of a link, for example `2if02z`), we can retrieve the comment tree of an entire topic. 
+
+```javascript
+reddit.comments('GoneWild', '2ig7dl', function(err, data, res) {
+	console.log(data);
+})
+```
+
 ###Filters
 
 Filters in redwrap are methods we can chain to our requests.  These filters correspond exactly with the filters you see on the reddit site. In the last example, we saw our first use of a filter, when we chained .hot() to our request.  Below is a list of possible filters.  You can find 
