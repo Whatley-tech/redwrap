@@ -13,16 +13,34 @@ var request = require('request'),
 
 /*==========  CONSTRUCTOR  ==========*/
 
-var Requester = function(path) {
+var Requester = function(path, search, fromTime, toTime) {
 	this.ee = new EventEmitter();
-	this.path = path || '/';
-	this.filter = '';
-	this.url = {
-		protocol: 'http',
-		host: 'www.reddit.com',
-		pathname: path + '.json',
-		query: {}
-	};
+
+	if (search === undefined) {
+		this.path = path || '/';
+		this.filter = '';
+		this.url = {
+			protocol: 'http',
+			host: 'www.reddit.com',
+			pathname: path + '.json',
+			query: {}
+		};
+	} else {
+		this.path = path || '/';
+		this.filter = '';
+		this.url = {
+			protocol: 'http',
+			host: 'www.reddit.com',
+			pathname: path + '.json',
+			query: {
+				'sort': 'new',
+				'q': 'timestamp:' + fromTime + '..' + toTime,
+				'restrict_sr': 'on',
+				'syntax': 'cloudsearch',
+				'limit': 100
+			}
+		};
+	}
 };
 
 

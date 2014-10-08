@@ -61,8 +61,21 @@ Given a subreddit and a article ID (or what Reddit terms the `ID36` of a link, f
 ```javascript
 reddit.comments('GoneWild', '2ig7dl', function(err, data, res) {
 	console.log(data);
-})
+});
 ```
+
+###5.Search
+
+Given a subreddit, a beginning time, and an ending time, we can retrieve the listing for the subreddit.
+
+```javascript
+// reddit.search(subreddit, beginningTime, endingTime, callback)
+reddit.search('GoneWild', 1412110217, 1412110503, function(err, data, res) {
+	console.log(data);
+});
+```
+
+The times are specified in `Epoch Time / 1000`.
 
 ###Filters
 
