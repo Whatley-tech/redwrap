@@ -13,7 +13,10 @@ var request = require('request')
 
 /*==========  CONSTRUCTOR  ==========*/
 
-var Requester = function(path) {
+var Requester = function(path, options) {
+                options = options || {};
+                this.debug = options.debug || false;
+
 		this.ee = new EventEmitter();
 		this.path = path || '/';
 		this.filter = '';
@@ -73,7 +76,9 @@ Requester.prototype.collector = function() {
 	,	nextAfter = ''
 	,	prevAfter = '';
 
-	console.log('Requesting: ' + reqUrl);
+	if (that.debug) {
+		console.log('Requesting: ' + reqUrl);
+	}
 
 	request.get(reqUrl, function(error, res, body){
 		if (error) {
