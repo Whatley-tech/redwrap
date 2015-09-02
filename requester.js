@@ -1,29 +1,33 @@
 /*====================================
- =            Requester.js            =
+ =      Requester.js      =
  ====================================*/
 
 /*==========  MODULES  ==========*/
 
 var request = require('request'),
-    EventEmitter = require('events').EventEmitter,
-    util = require('util'),
-    qs = require('querystring'),
-    url = require('url');
+  EventEmitter = require('events').EventEmitter,
+  // util = require('util'),
+  // qs = require('querystring'),
+  url = require('url');
 
 
 /*==========  CONSTRUCTOR  ==========*/
 
-var Requester = function (path, userAgent) {
-    this.ee = new EventEmitter();
-    this.path = path || '/';
-    this.filter = '';
-    this.url = {
-        protocol: 'http',
-        host: 'www.reddit.com',
-        pathname: path + '.json',
-        query: {}
-    };
-    this.userAgent = userAgent ? userAgent : "redwrap";
+var Requester = function (path) {
+  this.ee = new EventEmitter();
+  this.path = path || '/';
+  this.filter = '';
+  this.url = {
+    protocol: 'http',
+    host: 'www.reddit.com',
+    pathname: path + '.json',
+    query: {}
+  };
+  this.userAgent = "redwrap";
+};
+
+Requester.prototype.setUserAgent = function(userAgent){
+  this.userAgent = userAgent;
 };
 
 
@@ -31,36 +35,35 @@ var Requester = function (path, userAgent) {
 
 //executes a single request
 Requester.prototype.exe = function (cb) {
-    var query = qs.stringify(this.url.query),
-        reqUrl = url.format(this.url),
-        parsedBody = '';
+  var // query = qs.stringify(this.url.query),
+  reqUrl = url.format(this.url),
+  parsedBody = '';
 
-    var data = {
-        uri: reqUrl,
-        headers: {
-            'User-Agent': this.userAgent
-        }
-    };
+  var data = {
+    uri: reqUrl,
+    headers: {
+      'User-Agent': this.userAgent
+    }
+  };
 
-    request(data, function (err, res, body) {
-        try {
-            parsedBody = JSON.parse(body);
-        }
-        catch (parseError) {
-            return cb(parseError, null);
-        }
-        cb(err, parsedBody, res);
-    });
+  request(data, function (err, res, body) {
+    try {
+      parsedBody = JSON.parse(body);
+    } catch (parseError) {
+      return cb(parseError, null);
+    }
+    cb(err, parsedBody, res);
+  });
 };
 
 //executes multiple requests
 Requester.prototype.all = function (cb) {
-    var limit = this.url.query.limit;
-    this.url.query.limit = (limit) ? limit : 100; //default max limit, 100
+  var limit = this.url.query.limit;
+  this.url.query.limit = (limit) ? limit : 100; //default max limit, 100
 
-    cb(this.ee);
+  cb(this.ee);
 
-    this.collector();
+  this.collector();
 };
 
 /*
@@ -72,109 +75,108 @@ Requester.prototype.all = function (cb) {
  */
 
 Requester.prototype.collector = function () {
-    var that = this
-        , reqUrl = url.format(that.url)
-        , parsedBody = ''
-        , nextAfter = ''
-        , prevAfter = '';
+  var that = this,
+  reqUrl = url.format(that.url),
+  parsedBody = '',
+  nextAfter = '',
+  prevAfter = '';
 
-    console.log('Requesting: ' + reqUrl);
+  console.log('Requesting: ' + reqUrl);
 
-    var data = {
-        uri: reqUrl,
-        headers: {
-            'User-Agent': this.userAgent
-        }
-    };
+  var data = {
+    uri: reqUrl,
+    headers: {
+      'User-Agent': this.userAgent
+    }
+  };
 
-    request(data, function (error, res, body) {
-        if (error) {
-            that.ee.emit('error', error);
-            return;
-        }
+  request(data, function (error, res, body) {
+    if (error) {
+      return that.ee.emit('error', error);
+    }
 
-        if (!error && res.statusCode == 200) {
-            try {
-                parsedBody = JSON.parse(body);
-            }
-            catch (parseError) {
-                return that.ee.emit('error', parseError);
-            }
+    if(!error && res.statusCode === 200) {
+      try {
+      parsedBody = JSON.parse(body);
+      }
+      catch (parseError) {
+      return that.ee.emit('error', parseError);
+      }
 
-            that.ee.emit('data', parsedBody, res);
+      that.ee.emit('data', parsedBody, res);
 
-            if (parsedBody.data.after) {
-                nextAfter = parsedBody.data.after,
-                    prevAfter = that.url.query.after;
-                that.url.query.after = nextAfter;
+      if (parsedBody.data.after) {
+      nextAfter = parsedBody.data.after;
+      prevAfter = that.url.query.after;
+      that.url.query.after = nextAfter;
 
-                return (nextAfter !== prevAfter) ? //a check to see if we are done
-                    that.collector() : that.ee.emit('end');
-            }
-            return that.ee.emit('end');
-        }
-    });
+      return (nextAfter !== prevAfter) ? //a check to see if we are done
+        that.collector() : that.ee.emit('end');
+      }
+      return that.ee.emit('end');
+    }
+  });
 };
 
 
 /*========== @QUERY OPTIONS  ==========*/
 
 var queries = [
-    'sort'
-    , 'from'
-    , 'limit'
-    , 'after'
-    , 'before'
-    , 'count'
+  'sort',
+  'from',
+  'limit',
+  'after',
+  'before',
+  'count',
 ];
 
 queries.forEach(function (query) {
-    if (query === 'from') {
-        Requester.prototype.from = function (value, cb) {
-            this.url.query.t = value;
-            return (cb) ? this.exe(cb) : this;
-        };
-        return;
-    }
-
-    Requester.prototype[query] = function (value, cb) {
-        this.url.query[query] = value;
-        return (cb) ? this.exe(cb) : this;
+  if (query === 'from') {
+    Requester.prototype.from = function (value, cb) {
+      this.url.query.t = value;
+      return (cb) ? this.exe(cb) : this;
     };
+  } else {
+    Requester.prototype[query] = function (value, cb) {
+      this.url.query[query] = value;
+      return (cb) ? this.exe(cb) : this;
+    };
+  }
 });
 
 
 /*==========  FILTERS  ==========*/
 
 var filters = [
-    //user
-    'overview'
-    , 'comments'
-    , 'submitted'
-    , 'liked'
-    , 'disliked'
-    , 'hidden'
-    , 'saved'
-    , 'about'
-    //r
-    , 'hot'
-    , 'new'
-    , 'controversial'
-    , 'top'
+  //user
+  'overview',
+  'comments',
+  'submitted',
+  'liked',
+  'disliked',
+  'hidden',
+  'saved',
+  'about',
+  //r
+  'hot',
+  'new',
+  'controversial',
+  'top',
 ];
 
 filters.forEach(function (filter) {
-    Requester.prototype[filter] = function (cb) {
-        if (this.filter) throw "Only one filter can be applied to a query.";
-        this.filter = filter;
-        this.url.pathname = this.path + this.filter + '/.json';
+  Requester.prototype[filter] = function (cb) {
+    if (this.filter) {
+      throw "Only one filter can be applied to a query.";
+    }
+    this.filter = filter;
+    this.url.pathname = this.path + this.filter + '/.json';
 
-        return (cb) ? this.exe(cb) : this;
-    };
+    return (cb) ? this.exe(cb) : this;
+  };
 });
 
 
 /*==========  EXPORTS  ==========*/
 
 exports.Requester = Requester;
-

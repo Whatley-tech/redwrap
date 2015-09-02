@@ -1,40 +1,46 @@
-Requester = require('./requester').Requester;
+var Requester = require('./requester').Requester;
 
 var userAgent = "redwrap";
 
 var setUserAgent = function(name){
-    userAgent = name;
+  userAgent = name;
 };
 
 //request user data
 var user = function(username, cb) {
-    var path = '/user/' + username + '/',
-        requester = new Requester(path, userAgent);
+  var path = '/user/' + username + '/',
+    requester = new Requester(path);
 
-    return(cb) ? requester.exe(cb) : requester;
+  requester.setUserAgent(userAgent);
+
+  return (cb) ? requester.exe(cb) : requester;
 };
 
 //request subreddit data
 var r = function(subreddit, cb) {
-    var path = '/r/' + subreddit + '/',
-        requester = new Requester(path, userAgent);
+  var path = '/r/' + subreddit + '/',
+    requester = new Requester(path);
 
-    return(cb) ? requester.exe(cb) : requester;
+  requester.setUserAgent(userAgent);
+
+  return (cb) ? requester.exe(cb) : requester;
 };
 
 //lists reddit front page filters
 var list = function(filter, cb) {
-    var path = '',
-        requester = '';
+  var path = '',
+    requester = '';
 
-    if(filter) {
-        path = filter + '/';
-        requester = new Requester(path, userAgent);
-    } else {
-        requester = new Requester(null, userAgent);
-    }
+  if(filter) {
+    path = filter + '/';
+    requester = new Requester(path);
+  } else {
+    requester = new Requester(null);
+  }
 
-    return(cb) ? requester.exe(cb) : requester;
+  requester.setUserAgent(userAgent);
+
+  return (cb) ? requester.exe(cb) : requester;
 };
 
 exports.setUserAgent = setUserAgent;
