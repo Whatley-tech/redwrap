@@ -11,12 +11,14 @@ var request = require('request'),
   url = require('url');
 
 
+
 /*==========  CONSTRUCTOR  ==========*/
 
 var Requester = function (path, options) {
 
   options = options || {};
   this.debug = !!options.debug;
+  this.userAgent = options.userAgent || "redwrap";
 
   this.ee = new EventEmitter();
   this.path = path || '/';
@@ -25,10 +27,26 @@ var Requester = function (path, options) {
     protocol: 'http',
     host: 'www.reddit.com',
     pathname: path + '.json',
-    query: {}
+    query: options.query || {}
   };
 
-  this.userAgent = options.userAgent || "redwrap";
+};
+
+Requester.prototype.setUserAgent = function(userAgent){
+  this.userAgent = userAgent;
+  return this;
+};
+
+Requester.prototype.setQuery = function(query){
+  this.url.query = query;
+  return this;
+};
+
+Requester.prototype.setOptions = function(opts){
+  Object.keys(opts).forEach(function(key){
+    this[key] = opts[key];
+  });
+  return this;
 };
 
 
