@@ -1,18 +1,11 @@
 var Requester = require('./requester').Requester;
 
-var userAgent = "redwrap";
-
-var setUserAgent = function(name){
-  userAgent = name;
-  return exports;
-};
+var options = {};
 
 //request user data
 var user = function(username, cb) {
   var path = '/user/' + username + '/',
-    requester = new Requester(path);
-
-  requester.setUserAgent(userAgent);
+    requester = new Requester(path, options);
 
   return (cb) ? requester.exe(cb) : requester;
 };
@@ -20,9 +13,7 @@ var user = function(username, cb) {
 //request subreddit data
 var r = function(subreddit, cb) {
   var path = '/r/' + subreddit + '/',
-    requester = new Requester(path);
-
-  requester.setUserAgent(userAgent);
+    requester = new Requester(path, options);
 
   return (cb) ? requester.exe(cb) : requester;
 };
@@ -34,17 +25,15 @@ var list = function(filter, cb) {
 
   if(filter) {
     path = filter + '/';
-    requester = new Requester(path);
+    requester = new Requester(path, options);
   } else {
-    requester = new Requester(null);
+    requester = new Requester(null, options);
   }
-
-  requester.setUserAgent(userAgent);
 
   return (cb) ? requester.exe(cb) : requester;
 };
 
-exports.setUserAgent = setUserAgent;
+exports.options = options;
 exports.user = user;
 exports.r = r;
 exports.list = list;
