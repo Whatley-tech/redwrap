@@ -13,7 +13,11 @@ var request = require('request'),
 
 /*==========  CONSTRUCTOR  ==========*/
 
-var Requester = function (path) {
+var Requester = function (path, options) {
+
+  options = options || {};
+  this.debug = !!options.debug;
+
   this.ee = new EventEmitter();
   this.path = path || '/';
   this.filter = '';
@@ -23,12 +27,8 @@ var Requester = function (path) {
     pathname: path + '.json',
     query: {}
   };
-  this.userAgent = "redwrap";
-};
 
-Requester.prototype.setUserAgent = function(userAgent, cb){
-  this.userAgent = userAgent;
-  return (cb) ? this.exe(cb) : this;
+  this.userAgent = options.userAgent || "redwrap";
 };
 
 
@@ -82,7 +82,9 @@ Requester.prototype.collector = function () {
   nextAfter = '',
   prevAfter = '';
 
-  console.log('Requesting: ' + reqUrl);
+  if(that.debug){
+    console.log('Requesting: ' + reqUrl);
+  }
 
   var data = {
     uri: reqUrl,
