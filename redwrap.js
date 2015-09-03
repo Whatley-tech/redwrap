@@ -9,6 +9,11 @@ redwrap.setUserAgent = function(userAgent){
   return redwrap;
 };
 
+redwrap.setQuery = function(query){
+  redwrap.options.query = query;
+  return redwrap;
+};
+
 redwrap.setOptions = function(opts){
   Object.keys(opts).forEach(function(key){
     redwrap.options[key] = opts[key];
