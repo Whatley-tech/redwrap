@@ -4,6 +4,7 @@ var userAgent = "redwrap";
 
 var setUserAgent = function(name){
   userAgent = name;
+  return exports;
 };
 
 //request user data

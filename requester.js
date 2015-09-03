@@ -26,8 +26,9 @@ var Requester = function (path) {
   this.userAgent = "redwrap";
 };
 
-Requester.prototype.setUserAgent = function(userAgent){
+Requester.prototype.setUserAgent = function(userAgent, cb){
   this.userAgent = userAgent;
+  return (cb) ? this.exe(cb) : this;
 };
 
 

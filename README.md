@@ -2,7 +2,7 @@
 
 ##Description
 
-Redwrap is a node.js module that simplifies Reddit API requests through jquery style chaining methods.  
+Redwrap is a node.js module that simplifies Reddit API requests through jQuery style chaining methods.  
 
 ##How to use
 
@@ -32,7 +32,7 @@ reddit.user('username', function(err, data, res){
 ```javascript
 reddit.r('WTF', function(err, data, res){
   console.log(data); //outputs object representing first page of WTF subreddit
-});	
+});
 ```
 
 ###3.The basic list request
@@ -56,11 +56,11 @@ Take note of the .exe() method.  This is an optional method that can be placed a
 
 ###Filters
 
-Filters in redwrap are methods we can chain to our requests.  These filters correspond exactly with the filters you see on the reddit site. In the last example, we saw our first use of a filter, when we chained .hot() to our request.  Below is a list of possible filters.  You can find 
+Filters in redwrap are methods we can chain to our requests.  These filters correspond exactly with the filters you see on the reddit site. In the last example, we saw our first use of a filter, when we chained .hot() to our request.  Below is a list of possible filters.  You can find
 
 
 User filters
- 
+
 * overview
 * comments
 * submitted
@@ -69,7 +69,7 @@ User filters
 * hidden
 * saved
 * about
- 
+
 Subreddit filters
 
 * hot
@@ -88,8 +88,8 @@ reddit.user('username').sort('top').from('year').limit(100, function(err, data, 
 ```
 Here is a list of the possible queries along with acceptable arguments. You can learn more about the arguments from the Reddit API documentation.
 
-* sort() 
-	Possible arguments: 'hot', 'top', 'new', 'controversial' 
+* sort()
+	Possible arguments: 'hot', 'top', 'new', 'controversial'
 * from()
 	Possible arguments: 'all','day','week','month','year'
 * limit()
@@ -103,7 +103,7 @@ Here is a list of the possible queries along with acceptable arguments. You can 
 
 ###Advanced - Making multiple requests with the .all() method.
 
-**Use this at your own risk** 
+**Use this at your own risk**
 
 Before using this feature it is important that you be aware of the rules found in the Reddit API documentation.  Currently, there is no throttle on the number of requests per min the .all()  method makes.  It will continue to cycle until it collects all of the requested data, or until Reddit cuts you off. Also note that the default limit is set to 100.  You can change this by adding your own limit query to the request chain, but it isn't recommended.  I would like to expand on this feature in the near future, so please, if you have any feature requests let me know.
 
